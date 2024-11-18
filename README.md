@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# CS 409 Final Project Proposal
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Team Name:** Team Rwby  
+**Team Members:** Ander Zhu (shuqinz2), Peter Lu (wenpeng6), Xucheng Yu (xy63)  
+**Web App Name:** EventLawnchair 
 
-## Available Scripts
+# \# Problem Statement / Motivation
 
-In the project directory, you can run:
+## 	Problem Statement:
 
-### `npm start`
+Many individuals struggle to organize and discover events that match their interests and schedules. Current solutions often lack integrated features, such as weather information and location mapping, making it difficult for users to plan their attendance effectively. Some have clunky UI and do not offer responsive, user-friendly experiences.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Motivation:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+To create an event management web app, we call it EventLawnchair. It aims to create a lightweight, all-in-one solution with an enhanced user interface that allows seamless event planning, discovery, and management. We want to simplify event interactions, reduce planning hassles, and ultimately make it easier for users to connect with others and attend events that match their interests.
 
-### `npm test`
+# \# User Problems
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+It is always challenging for users to discover and manage events that fit their interests and schedules. Most existing platforms do not have an intuitive interface to create events, making it difficult for users to set up and promote their events. Additionally, potential attendees struggle to find accurate weather information and navigation support, which are crucial for planning, especially for outdoor gatherings. By integrating these features, the app will not only simplify the event creation process but also enhance user experience through real-time weather updates and location mapping. This will foster community engagement by making it easier for users to connect with others and attend events that interest them.
 
-### `npm run build`
+### Target User Group
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Some of the target audiences of EventLawnchair are:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+\- Students and campus communities  
+\- Small local organizations  
+\- Event Organizers
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# \# Basic interactions your app will support in service of goal
 
-### `npm run eject`
+Users can log in to their account and create their own events. These events can also be seen by other users. There is also a map showing the location of the event and the weather forecast.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- User Authentication: Users can view events without signing in, and have the ability to add new events once logged in. They can sign up, log in, and log out securely.  
+- Event Creation:   
+  - Event creation needs to input the content, time and place. Created events are accompanied by maps and weather forecasts.  
+  - Once logged in, user can easily create new events by entering key info (name, description, date, time, location, etc)  
+- Event Dashboard:   
+  - Users will have access to a personalized event dashboard where they can view:  
+    - Events they’ve created  
+    - Events they are attending  
+  - Each event component will contain related information like the location of the venue, the number of attendees, and the weather forecast for the day.  
+- Show a QR code to the event  
+  - Ability to generate QR code the event, no need for manual creation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# \# Similar Apps
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- [https://one.illinois.edu/events](https://one.illinois.edu/events): A university platform that lacks individual event creation and is limited to official university-affiliated events.  
+- [https://www.when2meet.com/](https://www.when2meet.com/): a useful yet overly simple scheduling app without event creation, mapping, or weather features.  
+- [https://sched.com/](https://sched.com/): a subscription based SaaS platform
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+# \# Difference they differ
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Individual Event Creation:** Unlike OneIllinois, EventLawnchair will allow anyone to create events, whether they’re students, small business owners, or community members.  
+- **Responsive, Lightweight Design:** EventLawnchair will be fully web-based, accessible from any device, and optimized for mobile without requiring a separate app download.  
+- **Weather/Map API Integration:** Unlike current apps that often require external tools, EventLawnchair will integrate weather and map APIs to provide comprehensive event information.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# 
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
