@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Map, { Marker, NavigationControl } from "react-map-gl";
 
+import "mapbox-gl/dist/mapbox-gl.css";
+
 const AccessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "something";
 interface MiniMapProps {
   coordinates: [number, number];
