@@ -10,7 +10,13 @@ const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 mongoose.connect(
   "mongodb+srv://xy63:BpbJQKcy1HhArvFU@cluster0.8zmyc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true"
