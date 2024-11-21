@@ -215,7 +215,8 @@ export default function EventDetailPage({
               <div className="flex items-center text-gray-600">
                 <FaRegCalendarCheck />
                 <span className="px-1">
-                  {new Date(event.date).toLocaleDateString()} at {event.time}
+                  {new Date(event.date).toLocaleDateString()} at{" "}
+                  {new Date(event.date).toLocaleTimeString()}
                 </span>
               </div>
             </div>
@@ -246,6 +247,7 @@ export default function EventDetailPage({
               />
             </div>
             <div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Map</h2>
               <MapDisplay
                 coordinates={[
                   event.location.latitude,
