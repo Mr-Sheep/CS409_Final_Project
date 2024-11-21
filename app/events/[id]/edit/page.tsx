@@ -69,11 +69,14 @@ export default function CreateEventPage() {
 
   const fetchUserProfile = async (token: string | null) => {
     try {
-      const response = await fetch("http://localhost:4000/api/user/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://cs409-final-project-yjnl.onrender.com/api/user/profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -90,7 +93,7 @@ export default function CreateEventPage() {
   const fetchEventDetails = async (eventId: string, token: string | null) => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/events/${eventId}`,
+        `https://cs409-final-project-yjnl.onrender.com/api/events/${eventId}`,
         {
           method: "GET",
           headers: {
@@ -147,14 +150,17 @@ export default function CreateEventPage() {
 
     console.log("Sending event payload:", eventPayload);
 
-    const response = await fetch(`http://localhost:4000/api/events/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(eventPayload),
-    });
+    const response = await fetch(
+      `https://cs409-final-project-yjnl.onrender.com/api/events/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(eventPayload),
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
