@@ -12,7 +12,10 @@ const port = process.env.PORT || 4000;
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "https://cs-409-final-project.vercel.app",
+    origin: [
+      "https://cs-409-final-project.vercel.app",
+      "http://localhost:3000",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -162,7 +165,7 @@ app.post("/api/login", async (req, res) => {
       expiresIn: "1h",
     });
     res.json({
-      message: "Login successful",
+      message: `[Login] User: ${user._id} successful`,
       token,
       username: user.username,
     });
