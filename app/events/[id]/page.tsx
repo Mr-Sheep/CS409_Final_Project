@@ -15,6 +15,7 @@ interface Event {
   description: string;
   date: string;
   time: string;
+  location_note: string | "";
   location: {
     address: string;
     full_address: string;
@@ -188,13 +189,13 @@ export default function EventDetailPage({
                   href={`/events/${event._id}/edit`}
                   className="text-blue-600 hover:text-blue-700"
                 >
-                  Edit Event
+                  Edit
                 </Link>
                 <button
                   onClick={handleDelete}
                   className="text-red-600 hover:text-red-700"
                 >
-                  Delete Event
+                  Delete
                 </button>
               </div>
             )}

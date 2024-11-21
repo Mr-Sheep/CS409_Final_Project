@@ -49,6 +49,7 @@ export default function CreateEventPage() {
       description: "",
       date: currentDate,
       time: currentTime,
+      location_note: "",
       location: {
         address: "",
         full_address: "",
@@ -103,6 +104,7 @@ export default function CreateEventPage() {
       name: formData.name,
       description: formData.description,
       date: dateTime,
+      location_note: formData.location_note,
       location: formData.location,
       creator: userProfile.id,
       creatorUsername: userProfile.username,

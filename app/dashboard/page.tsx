@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 // import EventForm from "../components/EventForm";
 
 const EventCard = dynamic(() => import("../components/EventCard"), {
@@ -14,6 +15,7 @@ interface Event {
   name: string;
   description: string;
   date: string;
+  location_note: string | "";
   location: {
     address: string;
     full_address: string;
@@ -152,6 +154,7 @@ export default function DashboardPage() {
           Welcome to your personal dashboard, here you can create new events, or
           delete your old events
         </p>
+
         <Image
           src="/time_management.png"
           width={315}
@@ -167,6 +170,13 @@ export default function DashboardPage() {
 
       <div className="mb-8">
         <h2 className="text-gray-600 text-xl font-semibold mb-4">My Events</h2>
+        <Link
+          href="/events/create"
+          className="bg-blue-600 text-white px-4 py-2 mb-10 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Create Event
+        </Link>
+
         {events.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow-sm">
             <p className="text-gray-600 mb-4">
@@ -180,7 +190,7 @@ export default function DashboardPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-4">
             {events.map((event) => (
               <EventCard
                 key={event._id}

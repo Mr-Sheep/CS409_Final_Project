@@ -55,6 +55,7 @@ export default function CreateEventPage() {
       description: "",
       date: currentDate,
       time: currentTime,
+      location_note: "",
       location: {
         address: "",
         full_address: "",

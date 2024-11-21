@@ -8,6 +8,7 @@ interface EventCardProps {
     name: string;
     description: string;
     date: string;
+    location_note: string | "";
     location: {
       address: string;
       full_address: string;

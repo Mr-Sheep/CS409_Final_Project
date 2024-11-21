@@ -22,9 +22,14 @@ const MapSearchBox = ({ onSelectLocation }: MapSearchBoxProps) => {
     console.log(result.features[0]);
     if (result && result.features && result.features[0]) {
       const feature = result.features[0];
+
+      const fa =
+        feature.properties.full_address === ""
+          ? feature.properties.full_address
+          : feature.properties.name;
       const locationData = {
         address: feature.properties.name || "",
-        full_address: feature.properties.full_address || "",
+        full_address: fa || "",
         latitude: feature.geometry.coordinates[1] || 0,
         longitude: feature.geometry.coordinates[0] || 0,
         mapbox_id: feature.properties.mapbox_id,

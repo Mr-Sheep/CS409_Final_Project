@@ -114,7 +114,7 @@ const WeatherWidget = ({ coordinates, dateTime }: WeatherWidgetProp) => {
       style={{ width: "100%", height: "400px" }}
       className="text-gray-900 weather-widget bg-blue-50 p-4 rounded shadow"
     >
-      <h2 className="text-xl font-bold ">Daily Weather Forecast</h2>
+      <h2 className="text-xl font-bold ">Weather Forecast</h2>
       <p className="text-xs mb-4">
         powered by{" "}
         <Link href="https://open-meteo.com/en/about">open-meteo</Link>
