@@ -12,19 +12,18 @@ const port = process.env.PORT || 4000;
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "https://cs-409-final-project-iy9x.vercel.app",
+    origin: "https://cs-409-final-project.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  }),
+  })
 );
 
 mongoose.connect(
-  "mongodb+srv://xy63:BpbJQKcy1HhArvFU@cluster0.8zmyc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true",
+  "mongodb+srv://xy63:BpbJQKcy1HhArvFU@cluster0.8zmyc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true"
 );
 
-mongoose.connection.on(
-  "connected",
-  () => console.log("\nConnected to MongoDB\n"),
+mongoose.connection.on("connected", () =>
+  console.log("\nConnected to MongoDB\n")
 );
 
 const verifyToken = (req, res, next) => {
@@ -205,7 +204,7 @@ app.post("/api/events", verifyToken, async (req, res) => {
     // console.log(newEvent);
     await newEvent.save();
     console.log(
-      `[Event]: Event ${name} (id: ${newEvent._id}) by ${req.userId} created`,
+      `[Event]: Event ${name} (id: ${newEvent._id}) by ${req.userId} created`
     );
     res.status(201).json({
       image: "https://http.cat/images/201.jpg",
@@ -265,7 +264,7 @@ app.put("/api/events/:id", async (req, res) => {
     const updatedEvent = await Event.findByIdAndUpdate(
       req.params.id,
       { name, description, date, location },
-      { new: true },
+      { new: true }
     );
     if (!updatedEvent) {
       return res.status(404).json({
@@ -305,7 +304,7 @@ app.delete(
         errorMessage: error.message,
       });
     }
-  },
+  }
 );
 
 app.get("/api/events/user/:username", async (req, res) => {
