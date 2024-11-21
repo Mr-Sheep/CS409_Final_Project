@@ -93,6 +93,7 @@ const eventSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   date: { type: Date, required: true },
+  location_note: { type: String, required: false, default: "" },
   location: {
     address: { type: String, required: true },
     full_address: { type: String, required: true, default: "" },
@@ -261,12 +262,12 @@ app.get("/api/events/:id", async (req, res) => {
 
 // Update an event
 app.put("/api/events/:id", async (req, res) => {
-  const { name, date, location, description } = req.body;
+  const { name, date, location_note, location, description } = req.body;
 
   try {
     const updatedEvent = await Event.findByIdAndUpdate(
       req.params.id,
-      { name, description, date, location },
+      { name, description, date, location_note, location },
       { new: true }
     );
     if (!updatedEvent) {
