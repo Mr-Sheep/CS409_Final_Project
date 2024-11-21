@@ -10,6 +10,7 @@ interface FormData {
   time: string;
   location: {
     address: string;
+    full_address: string;
     latitude: number;
     longitude: number;
     mapbox_id: string;
@@ -59,6 +60,7 @@ export default function EventForm({
 
   const handleLocationSelect = (selection: {
     address: string;
+    full_address: string;
     latitude: number;
     longitude: number;
     mapbox_id: string;

@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import QRCodeGenerator from "../../components/QRCodeGenerator";
 import { FaRegCalendarCheck, FaLocationDot } from "react-icons/fa6";
-// import WeatherWidget from "@/app/components/WeatherWidget";
+import MapDisplay from "../../components/MapDisplay";
+import WeatherWidget from "@/app/components/WeatherWidget";
 
 interface Event {
   _id: string;
@@ -13,7 +14,13 @@ interface Event {
   description: string;
   date: string;
   time: string;
-  location: string;
+  location: {
+    address: string;
+    full_address: string;
+    latitude: number;
+    longitude: number;
+    mapbox_id: string;
+  };
   weather: string;
   creator: string;
   creatorUsername: string;
@@ -46,7 +53,7 @@ export default function EventDetailPage({
     const fetchUserProfile = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error(`no token available, break`);
+        // console.log(`no token available, break`);
         return;
       }
       try {
@@ -217,9 +224,12 @@ export default function EventDetailPage({
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 Location
               </h2>
-              <div className="flex items-center text-gray-600">
+              <div className="flex text-gray-600">
                 <FaLocationDot />
-                <span className="px-1">{event.location}</span>
+                <div className="px-1">
+                  <p>{event.location.address}</p>
+                  <p className="py-2">{event.location.full_address}</p>
+                </div>
               </div>
             </div>
 
@@ -227,7 +237,21 @@ export default function EventDetailPage({
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 Weather
               </h2>
-              {/* <WeatherWidget /> */}
+              <WeatherWidget
+                coordinates={[
+                  event.location.latitude,
+                  event.location.longitude,
+                ]}
+                dateTime={event.date}
+              />
+            </div>
+            <div>
+              <MapDisplay
+                coordinates={[
+                  event.location.latitude,
+                  event.location.longitude,
+                ]}
+              />
             </div>
           </div>
         </div>

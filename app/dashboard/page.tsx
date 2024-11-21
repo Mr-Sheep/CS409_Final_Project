@@ -11,6 +11,7 @@ interface Event {
   date: string;
   location: {
     address: string;
+    full_address: string;
     latitude: number;
     longitude: number;
     mapbox_id: string;
@@ -26,6 +27,7 @@ interface FormData {
   time: string;
   location: {
     address: string;
+    full_address: string;
     latitude: number;
     longitude: number;
     mapbox_id: string;
@@ -100,7 +102,7 @@ export default function DashboardPage() {
         const data = await response.json();
         setEvents(data);
       } catch (err) {
-        setError("Failed to load your events. Please try again later.");
+        setError("Failed to load your events.");
         console.error("Error fetching user events:", err);
       } finally {
         setLoading(false);

@@ -1,179 +1,127 @@
 "use client";
-
+import { openWeatherWMOToEmoji } from "@akaguny/open-meteo-wmo-to-emoji";
 import { useEffect, useState } from "react";
+import { fetchWeatherApi } from "openmeteo";
 
-interface WeatherWidgetProps {
-  address: string;
-  date: string;
-  className?: string;
+interface WeatherWidgetProp {
+  coordinates: [number, number];
+  dateTime: string;
 }
 
 interface WeatherData {
-  temperature: number;
+  date: string;
   weatherCode: number;
-  precipitation: number;
-  windSpeed: number;
+  temperatureMax: number;
+  temperatureMin: number;
 }
 
-// Weather code mapping based on Open-Meteo codes
-const weatherDescriptions: {
-  [key: number]: { icon: string; description: string };
-} = {
-  0: { icon: "☀️", description: "Clear sky" },
-  1: { icon: "🌤️", description: "Mainly clear" },
-  2: { icon: "⛅", description: "Partly cloudy" },
-  3: { icon: "☁️", description: "Overcast" },
-  45: { icon: "🌫️", description: "Foggy" },
-  48: { icon: "🌫️", description: "Depositing rime fog" },
-  51: { icon: "🌧️", description: "Light drizzle" },
-  53: { icon: "🌧️", description: "Moderate drizzle" },
-  55: { icon: "🌧️", description: "Dense drizzle" },
-  61: { icon: "🌧️", description: "Slight rain" },
-  63: { icon: "🌧️", description: "Moderate rain" },
-  65: { icon: "🌧️", description: "Heavy rain" },
-  71: { icon: "🌨️", description: "Slight snow" },
-  73: { icon: "🌨️", description: "Moderate snow" },
-  75: { icon: "🌨️", description: "Heavy snow" },
-  77: { icon: "🌨️", description: "Snow grains" },
-  80: { icon: "🌧️", description: "Slight rain showers" },
-  81: { icon: "🌧️", description: "Moderate rain showers" },
-  82: { icon: "🌧️", description: "Violent rain showers" },
-  85: { icon: "🌨️", description: "Slight snow showers" },
-  86: { icon: "🌨️", description: "Heavy snow showers" },
-  95: { icon: "⛈️", description: "Thunderstorm" },
-  96: { icon: "⛈️", description: "Thunderstorm with slight hail" },
-  99: { icon: "⛈️", description: "Thunderstorm with heavy hail" },
-};
-
-export default function WeatherWidget({
-  address,
-  date,
-  className = "",
-}: WeatherWidgetProps) {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [error, setError] = useState("");
+const WeatherWidget = ({ coordinates, dateTime }: WeatherWidgetProp) => {
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchWeather = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        // First, geocode the address using Mapbox
-        const geocodeResponse = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            address
-          )}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`
-        );
+        const date = new Date(dateTime).toISOString().split("T")[0];
+        console.log(date);
 
-        if (!geocodeResponse.ok) {
-          throw new Error("Failed to geocode address");
-        }
+        const params = {
+          latitude: coordinates[0],
+          longitude: coordinates[1],
+          daily: ["weather_code", "temperature_2m_max", "temperature_2m_min"],
+          temperature_unit: "fahrenheit",
+          wind_speed_unit: "mph",
+          precipitation_unit: "inch",
+          start_date: date,
+          end_date: date,
+        };
 
-        const geocodeData = await geocodeResponse.json();
-        if (!geocodeData.features || geocodeData.features.length === 0) {
-          throw new Error("Location not found");
-        }
+        const url = "https://api.open-meteo.com/v1/forecast";
+        const responses = await fetchWeatherApi(url, params);
 
-        const [lng, lat] = geocodeData.features[0].center;
+        const range = (start: number, stop: number, step: number) =>
+          Array.from(
+            { length: (stop - start) / step },
+            (_, i) => start + i * step
+          );
 
-        // Format date for Open-Meteo (YYYY-MM-DD)
-        const formattedDate = new Date(date).toISOString().split("T")[0];
+        const response = responses[0];
+        const utcOffsetSeconds = response.utcOffsetSeconds();
 
-        // Fetch weather from Open-Meteo
-        const weatherResponse = await fetch(
-          `https://api.open-meteo.com/v1/forecast?` +
-            `latitude=${lat}&longitude=${lng}&` +
-            `daily=weathercode,temperature_2m_max,precipitation_sum,windspeed_10m_max&` +
-            `timezone=auto&` +
-            `start_date=${formattedDate}&end_date=${formattedDate}`
-        );
+        const daily = response.daily()!;
 
-        if (!weatherResponse.ok) {
-          throw new Error("Failed to fetch weather data");
-        }
+        const weatherData = {
+          daily: {
+            time: range(
+              Number(daily.time()),
+              Number(daily.timeEnd()),
+              daily.interval()
+            ).map((t) => new Date((t + utcOffsetSeconds) * 1000)),
+            weatherCode: daily.variables(0)!.valuesArray()!,
+            temperature2mMax: daily.variables(1)!.valuesArray()!,
+            temperature2mMin: daily.variables(2)!.valuesArray()!,
+          },
+        };
 
-        const weatherData = await weatherResponse.json();
+        console.log(weatherData.daily.time.length);
 
-        setWeather({
-          temperature: weatherData.daily.temperature_2m_max[0],
-          weatherCode: weatherData.daily.weathercode[0],
-          precipitation: weatherData.daily.precipitation_sum[0],
-          windSpeed: weatherData.daily.windspeed_10m_max[0],
-        });
+        const weather: WeatherData = {
+          date: weatherData.daily.time[0].toISOString().split("T")[0],
+          weatherCode: weatherData.daily.weatherCode[0],
+          temperatureMax: weatherData.daily.temperature2mMax[0],
+          temperatureMin: weatherData.daily.temperature2mMin[0],
+        };
+        // console.log(weather);
+        setWeatherData(weather);
       } catch (err) {
-        console.error("Weather fetch error:", err);
-        setError("Failed to load weather data");
+        console.error("Error fetching weather data:", err);
+        setError("Failed to load weather data. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (address && date) {
-      fetchWeather();
-    }
-  }, [address, date]);
+    fetchWeather();
+  }, [coordinates, dateTime]);
 
   if (loading) {
-    return (
-      <div className={`bg-white rounded-lg shadow-sm p-4 ${className}`}>
-        <div className="animate-pulse space-y-2">
-          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-        </div>
-      </div>
-    );
+    return <div>Loading weather data...</div>;
   }
 
   if (error) {
     return (
-      <div className={`bg-white rounded-lg shadow-sm p-4 ${className}`}>
-        <p className="text-red-600">{error}</p>
+      <div className="bg-red-100 text-red-700 p-4 rounded">
+        <p>{error}</p>
       </div>
     );
   }
 
-  if (!weather) return null;
+  if (!weatherData) {
+    return null;
+  }
 
-  const weatherInfo = weatherDescriptions[weather.weatherCode] || {
-    icon: "❓",
-    description: "Unknown weather",
-  };
+  const weatherEmoji = openWeatherWMOToEmoji(weatherData.weatherCode);
+  const emojiValue = weatherEmoji.value;
+  const description = weatherEmoji.description;
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm p-4 ${className}`}>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <span className="text-4xl mr-2">{weatherInfo.icon}</span>
-          <span className="text-lg font-medium text-gray-900">
-            {weather.temperature}°C
-          </span>
-        </div>
-        <div className="text-right">
-          <p className="text-sm font-medium text-gray-900">
-            {weatherInfo.description}
-          </p>
-          <p className="text-sm text-gray-500">
-            {new Date(date).toLocaleDateString(undefined, {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        </div>
-      </div>
+    <div className="weather-widget bg-blue-50 p-4 rounded shadow">
+      <h2 className="text-xl font-bold ">Daily Weather Forecast</h2>
+      <p className="text-xs mb-4">powered by open-meteo</p>
+      <h3 className="text-xl font-bold mb-4">
+        {emojiValue} ({description})
+      </h3>
 
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div>
-          <p className="text-gray-500">Precipitation</p>
-          <p className="font-medium text-gray-900">
-            {weather.precipitation} mm
-          </p>
-        </div>
-        <div>
-          <p className="text-gray-500">Wind Speed</p>
-          <p className="font-medium text-gray-900">{weather.windSpeed} km/h</p>
-        </div>
-      </div>
+      <p>Date: {weatherData.date}</p>
+
+      <p>High: {weatherData.temperatureMax.toPrecision(2)}°F</p>
+      <p>Low: {weatherData.temperatureMin.toPrecision(2)}°F</p>
     </div>
   );
-}
+};
+
+export default WeatherWidget;

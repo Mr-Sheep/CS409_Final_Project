@@ -105,6 +105,7 @@ export default function CreateEventPage() {
     time: currentTime,
     location: {
       address: "",
+      full_address: "",
       latitude: 0,
       longitude: 0,
       mapbox_id: "",
