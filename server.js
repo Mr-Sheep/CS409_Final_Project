@@ -15,15 +15,16 @@ app.use(
     origin: "https://cs-409-final-project-iy9x.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 
 mongoose.connect(
-  "mongodb+srv://xy63:BpbJQKcy1HhArvFU@cluster0.8zmyc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true"
+  "mongodb+srv://xy63:BpbJQKcy1HhArvFU@cluster0.8zmyc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true",
 );
 
-mongoose.connection.on("connected", () =>
-  console.log("\nConnected to MongoDB\n")
+mongoose.connection.on(
+  "connected",
+  () => console.log("\nConnected to MongoDB\n"),
 );
 
 const verifyToken = (req, res, next) => {
@@ -143,11 +144,12 @@ app.post("/api/login", async (req, res) => {
   try {
     console.log(`[Login]: request from ${username}`);
     const user = await User.findOne({ username });
-    if (!user)
+    if (!user) {
       return res.status(404).json({
         image: "https://http.cat/images/404.jpg",
         error: "User not found",
       });
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
@@ -203,7 +205,7 @@ app.post("/api/events", verifyToken, async (req, res) => {
     // console.log(newEvent);
     await newEvent.save();
     console.log(
-      `[Event]: Event ${name} (id: ${newEvent._id}) by ${req.userId} created`
+      `[Event]: Event ${name} (id: ${newEvent._id}) by ${req.userId} created`,
     );
     res.status(201).json({
       image: "https://http.cat/images/201.jpg",
@@ -224,7 +226,7 @@ app.post("/api/events", verifyToken, async (req, res) => {
 app.get("/api/events", async (req, res) => {
   try {
     const events = await Event.find();
-    res.json(events);
+    res.status(200).json(events);
   } catch (error) {
     res.status(500).json({
       image: "https://http.cat/images/500.jpg",
@@ -238,18 +240,14 @@ app.get("/api/events", async (req, res) => {
 app.get("/api/events/:id", async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
-    if (!event)
+    if (!event) {
       return res.status(404).json({
         image: "https://http.cat/images/404.jpg",
         error: "Event not found",
       });
+    }
 
-    res.json({
-      ...event.toJSON(),
-      createdBy: {
-        username: event.creatorUsername,
-      },
-    });
+    res.json(event);
   } catch (error) {
     res.status(500).json({
       image: "https://http.cat/images/500.jpg",
@@ -261,13 +259,13 @@ app.get("/api/events/:id", async (req, res) => {
 
 // Update an event
 app.put("/api/events/:id", async (req, res) => {
-  const { creator, date, location, description } = req.body;
+  const { name, date, location, description } = req.body;
 
   try {
     const updatedEvent = await Event.findByIdAndUpdate(
       req.params.id,
-      { creator, date, location, description },
-      { new: true }
+      { name, description, date, location },
+      { new: true },
     );
     if (!updatedEvent) {
       return res.status(404).json({
@@ -307,7 +305,7 @@ app.delete(
         errorMessage: error.message,
       });
     }
-  }
+  },
 );
 
 app.get("/api/events/user/:username", async (req, res) => {
