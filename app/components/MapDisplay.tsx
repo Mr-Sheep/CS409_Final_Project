@@ -12,18 +12,19 @@ interface MiniMapProps {
 // https://stackoverflow.com/questions/11871077/proper-way-to-detect-webgl-support
 const webgl_support = (): boolean => {
   try {
-    var canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
     return !!(
       window.WebGLRenderingContext &&
       (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
     );
-  } catch (e) {
+  } catch (error) {
+    console.log(error);
     return false;
   }
 };
 
 const MapDisplay = ({ coordinates }: MiniMapProps) => {
-  const [map, setMap] = useState<mapboxgl.Map>();
+  const [, setMap] = useState<mapboxgl.Map>();
   const [webGLError, setWebGLError] = useState(false);
   const mapNode = useRef(null);
 
@@ -56,7 +57,7 @@ const MapDisplay = ({ coordinates }: MiniMapProps) => {
     return (
       <div className="bg-red-100 text-red-700 p-4 rounded">
         <p>
-          WebGL is not supported or failed to initialize. (and yes I don't like
+          WebGL is not supported or failed to initialize. (and yes I dont like
           WebGL)
         </p>
       </div>

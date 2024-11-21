@@ -56,11 +56,14 @@ export default function DashboardPage() {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://cs409-final-project-yjnl.onrender.com/api/user/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
@@ -87,7 +90,7 @@ export default function DashboardPage() {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:5000/api/events/user/${userProfile.username}`,
+          `https://cs409-final-project-yjnl.onrender.com/api/events/user/${userProfile.username}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -120,7 +123,7 @@ export default function DashboardPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5000/api/events/${eventId}`,
+        `https://cs409-final-project-yjnl.onrender.com/api/events/${eventId}`,
         {
           method: "DELETE",
           headers: {
@@ -158,7 +161,7 @@ export default function DashboardPage() {
       };
 
       const response = await fetch(
-        `http://localhost:5000/api/events/${editingEvent._id}`,
+        `https://cs409-final-project-yjnl.onrender.com/api/events/${editingEvent._id}`,
         {
           method: "PUT",
           headers: {

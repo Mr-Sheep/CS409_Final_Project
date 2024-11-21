@@ -3,9 +3,9 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import QRCodeGenerator from "../../components/QRCodeGenerator";
+import QRCodeGenerator from "@/app/components/QRCodeGenerator";
 import { FaRegCalendarCheck, FaLocationDot } from "react-icons/fa6";
-import MapDisplay from "../../components/MapDisplay";
+import MapDisplay from "@/app/components/MapDisplay";
 import WeatherWidget from "@/app/components/WeatherWidget";
 
 interface Event {
@@ -57,11 +57,14 @@ export default function EventDetailPage({
         return;
       }
       try {
-        const response = await fetch("http://localhost:5000/api/user/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://cs409-final-project-yjnl.onrender.com/api/user/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -82,11 +85,14 @@ export default function EventDetailPage({
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch(`http://localhost:5000/api/events/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `https://cs409-final-project-yjnl.onrender.com/api/events/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch event details");
@@ -116,12 +122,15 @@ export default function EventDetailPage({
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/events/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `https://cs409-final-project-yjnl.onrender.com/api/events/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete event");
