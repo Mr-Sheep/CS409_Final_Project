@@ -58,7 +58,9 @@ const LoginForm = () => {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-center mb-8">Log In</h1>
+      <h1 className="text-gray-900 text-2xl font-bold text-center mb-8">
+        Log In
+      </h1>
 
       {message && (
         <div className="bg-green-50 text-green-600 p-4 rounded-lg mb-6">

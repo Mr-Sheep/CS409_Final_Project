@@ -109,7 +109,7 @@ const WeatherWidget = ({ coordinates, dateTime }: WeatherWidgetProp) => {
   const description = weatherEmoji.description;
 
   return (
-    <div className="weather-widget bg-blue-50 p-4 rounded shadow">
+    <div className="text-gray-900 weather-widget bg-blue-50 p-4 rounded shadow">
       <h2 className="text-xl font-bold ">Daily Weather Forecast</h2>
       <p className="text-xs mb-4">powered by open-meteo</p>
       <h3 className="text-xl font-bold mb-4">

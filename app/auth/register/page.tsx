@@ -55,7 +55,9 @@ export default function Register() {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-center mb-8">Create an Account</h1>
+      <h1 className="text-gray-900 text-2xl font-bold text-center mb-8">
+        Create an Account
+      </h1>
 
       {error && (
         <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
