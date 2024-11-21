@@ -1,9 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import EventForm from "../../components/EventForm";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+
+const EventForm = dynamic(() => import("../../components/EventForm"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex justify-center items-center min-h-[50vh]">
+      <div className="text-gray-600">Loading form...</div>
+    </div>
+  ),
+});
 
 interface UserProfile {
   id: string;
@@ -14,22 +23,45 @@ export default function CreateEventPage() {
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const [initialData, setInitialData] = useState<any>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    setIsClient(true);
+  }, []);
 
+  useEffect(() => {
+    if (!isClient) return;
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/auth/login");
     }
-
     fetchUserProfile(token);
-  }, [router]);
+
+    // https://stackoverflow.com/questions/10211145/getting-current-date-and-time-in-javascript
+    const now = new Date();
+    const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    const currentDate = localNow.toISOString().split("T")[0];
+    const currentTime = localNow.toISOString().split("T")[1].slice(0, 5);
+
+    setInitialData({
+      name: "",
+      description: "",
+      date: currentDate,
+      time: currentTime,
+      location: {
+        address: "",
+        full_address: "",
+        latitude: 0,
+        longitude: 0,
+        mapbox_id: "",
+      },
+      creator: "",
+      creatorUsername: "",
+    });
+  }, [isClient, router]);
 
   const fetchUserProfile = async (token: string | null) => {
-    if (!token) {
-      console.error(`no token available, break`);
-      return;
-    }
     try {
       const response = await fetch(
         "https://cs409-final-project-yjnl.onrender.com/api/user/profile",
@@ -53,6 +85,7 @@ export default function CreateEventPage() {
   };
 
   const handleCreateEvent = async (formData: any) => {
+    if (!isClient) return;
     const token = localStorage.getItem("token");
     if (!token || !userProfile) {
       throw new Error("You must be logged in to create events");
@@ -75,7 +108,7 @@ export default function CreateEventPage() {
       creatorUsername: userProfile.username,
     };
 
-    console.log("Sending event payload:", eventPayload);
+    // console.log("Sending event payload:", eventPayload);
 
     const response = await fetch(
       "https://cs409-final-project-yjnl.onrender.com/api/events",
@@ -98,27 +131,13 @@ export default function CreateEventPage() {
     router.back();
   };
 
-  // https://stackoverflow.com/questions/10211145/getting-current-date-and-time-in-javascript
-  const now = new Date();
-  const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-  const currentDate = localNow.toISOString().split("T")[0];
-  const currentTime = localNow.toISOString().split("T")[1].slice(0, 5);
-
-  const initialData = {
-    name: "",
-    description: "",
-    date: currentDate,
-    time: currentTime,
-    location: {
-      address: "",
-      full_address: "",
-      latitude: 0,
-      longitude: 0,
-      mapbox_id: "",
-    },
-    creator: "",
-    creatorUsername: "",
-  };
+  if (!isClient || !initialData) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">

@@ -1,8 +1,15 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import EventCard from "../components/EventCard";
-import EventForm from "../components/EventForm";
+// import EventForm from "../components/EventForm";
+
+const EventCard = dynamic(() => import("../components/EventCard"), {
+  ssr: false,
+});
+const EventForm = dynamic(() => import("../components/EventForm"), {
+  ssr: false,
+});
 
 interface Event {
   _id: string;
