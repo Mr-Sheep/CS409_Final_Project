@@ -1,7 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import mapboxgl from "mapbox-gl";
-
-import "mapbox-gl/dist/mapbox-gl.css";
+import React, { useEffect, useState } from "react";
+import Map, { Marker, NavigationControl } from "react-map-gl";
 
 const AccessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "something";
 interface MiniMapProps {
@@ -24,9 +22,7 @@ const webgl_support = (): boolean => {
 };
 
 const MapDisplay = ({ coordinates }: MiniMapProps) => {
-  const [, setMap] = useState<mapboxgl.Map>();
   const [webGLError, setWebGLError] = useState(false);
-  const mapNode = useRef(null);
 
   // https://dev.to/dqunbp/using-mapbox-gl-in-react-with-next-js-2glg
   useEffect(() => {
@@ -34,23 +30,6 @@ const MapDisplay = ({ coordinates }: MiniMapProps) => {
       setWebGLError(true);
       return;
     }
-
-    const node = mapNode.current;
-    if (typeof window === "undefined" || node === null) return;
-
-    const mapboxMap = new mapboxgl.Map({
-      container: node,
-      accessToken: AccessToken,
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: coordinates,
-      zoom: 9,
-    });
-
-    setMap(mapboxMap);
-
-    return () => {
-      mapboxMap.remove();
-    };
   }, [coordinates]);
 
   if (webGLError) {
@@ -64,7 +43,25 @@ const MapDisplay = ({ coordinates }: MiniMapProps) => {
     );
   }
 
-  return <div ref={mapNode} style={{ width: "100%", height: "400px" }} />;
+  return (
+    <Map
+      initialViewState={{
+        latitude: coordinates[0],
+        longitude: coordinates[1],
+        zoom: 14,
+      }}
+      mapboxAccessToken={AccessToken}
+      style={{ width: "100%", height: "400px" }}
+      mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+    >
+      <Marker
+        latitude={coordinates[0]}
+        longitude={coordinates[1]}
+        color="red"
+      />
+      <NavigationControl />
+    </Map>
+  );
 };
 
 export default MapDisplay;

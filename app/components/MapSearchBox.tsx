@@ -33,6 +33,20 @@ const MapSearchBox = ({ onSelectLocation }: MapSearchBoxProps) => {
       setValue(locationData.address);
     }
   };
+
+  const theme = {
+    variables: {
+      padding: "1em",
+      borderRadius: "0.5rem",
+      boxShadow: "0 0 0 1px silver",
+      width: "100%",
+      duration: "150ms",
+      unit: "14px",
+      unitHeader: "18px",
+      lineHeight: "2.0",
+    },
+  };
+
   return (
     <div>
       {/* @ts-expect-error Server Component */}
@@ -44,6 +58,7 @@ const MapSearchBox = ({ onSelectLocation }: MapSearchBoxProps) => {
         }}
         value={value}
         onRetrieve={handleChange}
+        theme={theme}
       />
     </div>
   );

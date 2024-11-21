@@ -58,14 +58,11 @@ export default function EventDetailPage({
         return;
       }
       try {
-        const response = await fetch(
-          "https://cs409-final-project-yjnl.onrender.com/api/user/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("http://localhost:4000/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -86,14 +83,11 @@ export default function EventDetailPage({
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch(
-          `https://cs409-final-project-yjnl.onrender.com/api/events/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`http://localhost:4000/api/events/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch event details");
@@ -123,15 +117,12 @@ export default function EventDetailPage({
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `https://cs409-final-project-yjnl.onrender.com/api/events/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/api/events/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to delete event");
@@ -239,9 +230,18 @@ export default function EventDetailPage({
                 <FaLocationDot />
                 <div className="px-1">
                   <p>{event.location.address}</p>
-                  <p className="py-2">{event.location.full_address}</p>
+                  <p className="py-2 mb-4">{event.location.full_address}</p>
                 </div>
               </div>
+              <Link
+                href={`http://maps.apple.com/?q=${event.location.address.replace(
+                  / /g,
+                  "+"
+                )}&sll=${event.location.latitude},${event.location.longitude}`}
+                className="bg-blue-600 text-white px-4 ml-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Open in Maps
+              </Link>
             </div>
 
             <div>

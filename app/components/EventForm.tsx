@@ -91,7 +91,7 @@ export default function EventForm({
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           required
         />
       </div>
@@ -109,7 +109,7 @@ export default function EventForm({
           value={formData.description}
           onChange={handleChange}
           rows={4}
-          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           required
         />
       </div>
@@ -128,7 +128,7 @@ export default function EventForm({
             name="date"
             value={formData.date}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
@@ -146,7 +146,7 @@ export default function EventForm({
             name="time"
             value={formData.time}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="text-gray-700  w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
@@ -155,11 +155,16 @@ export default function EventForm({
       <div>
         <label
           htmlFor="location"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-gray-700 mb-2"
         >
           Location
         </label>
+
         <AddressAutofillProps onSelectLocation={handleLocationSelect} />
+        <div className="text-gray-700 my-4 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          {formData.location.address} <br />
+          {formData.location.full_address}
+        </div>
       </div>
 
       <button

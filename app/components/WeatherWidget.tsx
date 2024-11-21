@@ -2,6 +2,7 @@
 import { openWeatherWMOToEmoji } from "@akaguny/open-meteo-wmo-to-emoji";
 import { useEffect, useState } from "react";
 import { fetchWeatherApi } from "openmeteo";
+import Link from "next/link";
 
 interface WeatherWidgetProp {
   coordinates: [number, number];
@@ -109,9 +110,15 @@ const WeatherWidget = ({ coordinates, dateTime }: WeatherWidgetProp) => {
   const description = weatherEmoji.description;
 
   return (
-    <div className="text-gray-900 weather-widget bg-blue-50 p-4 rounded shadow">
+    <div
+      style={{ width: "100%", height: "400px" }}
+      className="text-gray-900 weather-widget bg-blue-50 p-4 rounded shadow"
+    >
       <h2 className="text-xl font-bold ">Daily Weather Forecast</h2>
-      <p className="text-xs mb-4">powered by open-meteo</p>
+      <p className="text-xs mb-4">
+        powered by{" "}
+        <Link href="https://open-meteo.com/en/about">open-meteo</Link>
+      </p>
       <h3 className="text-xl font-bold mb-4">
         {emojiValue} ({description})
       </h3>
