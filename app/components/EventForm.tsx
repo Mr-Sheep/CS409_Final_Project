@@ -1,28 +1,8 @@
 "use client";
 
+import { FormData, EventFormProps } from "../lib/types";
 import { useState } from "react";
 import AddressAutofillProps from "./MapSearchBox";
-
-interface FormData {
-  name: string;
-  description: string;
-  date: string;
-  time: string;
-  location_note: string | "";
-  location: {
-    address: string;
-    full_address: string | "";
-    latitude: number;
-    longitude: number;
-    mapbox_id: string;
-  };
-}
-
-interface EventFormProps {
-  initialData: FormData;
-  onSubmit?: (data: FormData) => Promise<void>;
-  submitLabel?: string;
-}
 
 export default function EventForm({
   initialData,

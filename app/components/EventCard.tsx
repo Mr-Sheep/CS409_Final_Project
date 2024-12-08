@@ -1,26 +1,8 @@
 "use client";
+
+import { EventCardProps } from "../lib/types";
 import { FaRegCalendarCheck, FaLocationDot, FaUser } from "react-icons/fa6";
 import Link from "next/link";
-
-interface EventCardProps {
-  event: {
-    _id: string;
-    name: string;
-    description: string;
-    date: string;
-    location_note: string | "";
-    location: {
-      address: string;
-      full_address: string;
-      latitude: number;
-      longitude: number;
-      mapbox_id: string;
-    };
-    creator: string;
-    creatorUsername: string;
-  };
-  onDelete?: (eventId: string) => void;
-}
 
 export default function EventCard({ event, onDelete }: EventCardProps) {
   const formattedDate = new Date(event.date).toLocaleDateString();

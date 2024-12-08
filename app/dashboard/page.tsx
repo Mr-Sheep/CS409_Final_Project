@@ -1,6 +1,7 @@
 "use client";
 
 import { API_BASE_URL } from "@/app/api/config";
+import { Event, UserProfile } from "../lib/types";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -11,28 +12,6 @@ import Link from "next/link";
 const EventCard = dynamic(() => import("../components/EventCard"), {
   ssr: false,
 });
-
-interface Event {
-  _id: string;
-  name: string;
-  description: string;
-  date: string;
-  location_note: string | "";
-  location: {
-    address: string;
-    full_address: string;
-    latitude: number;
-    longitude: number;
-    mapbox_id: string;
-  };
-  creator: string;
-  creatorUsername: string;
-}
-
-interface UserProfile {
-  _id: string;
-  username: string;
-}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -62,7 +41,7 @@ export default function DashboardPage() {
 
         const data = await response.json();
         setUserProfile({
-          _id: data._id,
+          id: data._id,
           username: data.username,
         });
       } catch (err) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { API_BASE_URL } from "@/app/api/config";
+import { UserProfile } from "@/app/lib/types";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,11 +15,6 @@ const EventForm = dynamic(() => import("../../components/EventForm"), {
     </div>
   ),
 });
-
-interface UserProfile {
-  id: string;
-  username: string;
-}
 
 export default function CreateEventPage() {
   const router = useRouter();

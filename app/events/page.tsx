@@ -1,26 +1,10 @@
 "use client";
 
 import { API_BASE_URL } from "../api/config";
+import { Event } from "../lib/types";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import EventCard from "../components/EventCard";
-
-interface Event {
-  _id: string;
-  name: string;
-  description: string;
-  date: string;
-  location_note: string | "";
-  location: {
-    address: string;
-    full_address: string;
-    latitude: number;
-    longitude: number;
-    mapbox_id: string;
-  };
-  creator: string;
-  creatorUsername: string;
-}
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);

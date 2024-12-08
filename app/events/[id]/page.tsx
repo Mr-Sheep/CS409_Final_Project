@@ -2,6 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import { API_BASE_URL } from "@/app/api/config";
+import { Event, UserProfile } from "@/app/lib/types";
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,30 +10,6 @@ import QRCodeGenerator from "@/app/components/QRCodeGenerator";
 import { FaRegCalendarCheck, FaLocationDot } from "react-icons/fa6";
 import MapDisplay from "@/app/components/MapDisplay";
 import WeatherWidget from "@/app/components/WeatherWidget";
-
-interface Event {
-  _id: string;
-  name: string;
-  description: string;
-  date: string;
-  time: string;
-  location_note: string | "";
-  location: {
-    address: string;
-    full_address: string;
-    latitude: number;
-    longitude: number;
-    mapbox_id: string;
-  };
-  weather: string;
-  creator: string;
-  creatorUsername: string;
-}
-
-interface UserProfile {
-  id: string;
-  username: string;
-}
 
 // fixed using https://github.com/vercel/next.js/issues/71690#issuecomment-2439644682
 interface Params {
