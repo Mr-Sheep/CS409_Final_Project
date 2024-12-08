@@ -5,11 +5,20 @@ import { Event } from "../lib/types";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import EventCard from "../components/EventCard";
+import ToggleBar from "../components/ToggleBar";
+
+const isFuture = (event: Event): boolean => {
+  const now = new Date();
+  const eventDate = new Date(event.date);
+  return eventDate > now;
+};
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showAll, setShowAll] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -38,6 +47,8 @@ export default function EventsPage() {
     fetchEvents();
   }, []);
 
+  const dispalyEvents = showAll ? events : events.filter(isFuture);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
@@ -49,7 +60,8 @@ export default function EventsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">All Events</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+
         {localStorage.getItem("token") && (
           <Link
             href="/events/create"
@@ -60,24 +72,44 @@ export default function EventsPage() {
         )}
       </div>
 
+      {!showFilter && (
+        <button
+          onClick={() => setShowFilter(true)}
+          className="flex items-center mb-8"
+        >
+          <span>Show Filter</span>
+        </button>
+      )}
+
+      {showFilter && (
+        <div className="flex items-center mb-8">
+          <span>Show Past Events: </span>
+          <ToggleBar value={showAll} onChange={setShowAll} />
+        </div>
+      )}
+
       {error && (
         <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
           {error}
         </div>
       )}
 
-      {events.length === 0 ? (
+      {dispalyEvents.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600 mb-4">No events found.</p>
+          <p className="text-gray-600 mb-4">
+            {!showAll ? "No future events found." : "No Events Found"}
+          </p>
           <p className="text-gray-500">
-            {localStorage.getItem("token")
-              ? "Why not create one?"
-              : "Please log in to create events."}
+            {localStorage.getItem("token") ? (
+              <Link href="/events/create">Why not create one?</Link>
+            ) : (
+              "Please log in to create events."
+            )}
           </p>
         </div>
       ) : (
         <div className="space-y-6">
-          {events.map((event) => (
+          {dispalyEvents.map((event) => (
             <EventCard key={event._id} event={event} />
           ))}
         </div>
