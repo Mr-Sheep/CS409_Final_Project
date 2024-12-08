@@ -1,5 +1,6 @@
 "use client";
 
+import { API_BASE_URL } from "@/app/api/config";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,19 +26,16 @@ export default function Register() {
 
     try {
       setLoading(true);
-      const response = await fetch(
-        "https://cs409-final-project-yjnl.onrender.com/api/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: formData.username,
-            password: formData.password,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
 
       const data = await response.json();
 

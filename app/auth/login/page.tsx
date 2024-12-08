@@ -1,5 +1,6 @@
 "use client";
 
+import { API_BASE_URL } from "@/app/api/config";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -28,16 +29,13 @@ const LoginForm = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(
-        "https://cs409-final-project-yjnl.onrender.com/api/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
       const data = await response.json();
 

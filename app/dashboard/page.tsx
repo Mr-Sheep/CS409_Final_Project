@@ -1,4 +1,6 @@
 "use client";
+
+import { API_BASE_URL } from "@/app/api/config";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -48,14 +50,11 @@ export default function DashboardPage() {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(
-          "https://cs409-final-project-yjnl.onrender.com/api/user/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/user/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
@@ -82,7 +81,7 @@ export default function DashboardPage() {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://cs409-final-project-yjnl.onrender.com/api/events/user/${userProfile.username}`,
+          `${API_BASE_URL}/events/user/${userProfile.username}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -114,15 +113,12 @@ export default function DashboardPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `https://cs409-final-project-yjnl.onrender.com/api/events/${eventId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to delete event");
