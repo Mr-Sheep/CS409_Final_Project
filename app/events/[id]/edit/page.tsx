@@ -5,6 +5,7 @@ import { UserProfile } from "@/app/lib/types";
 import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 const EventForm = dynamic(() => import("../../../components/EventForm"), {
@@ -35,7 +36,7 @@ export default function CreateEventPage() {
     if (!token) {
       router.push("/auth/login");
     }
-    fetchUserProfile(token);
+    fetchUserProfile();
     const eventId = Array.isArray(id) ? id[0] : id;
     if (eventId) {
       fetchEventDetails(eventId, token);
@@ -65,23 +66,31 @@ export default function CreateEventPage() {
     });
   }, [id, isClient, router]);
 
-  const fetchUserProfile = async (token: string | null) => {
+  const fetchUserProfile = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/auth/login");
+      return;
+    }
     try {
-      const response = await fetch("${API_BASE_URL}/user/profile", {
+      const response = await fetch(`${API_BASE_URL}/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUserProfile({
-          id: data.id || data._id,
-          username: data.username,
-        });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user profile");
       }
-    } catch (err: any) {
-      console.error(`failed to fetch user profile: ${err.message}`);
+
+      const data = await response.json();
+      setUserProfile({
+        id: data._id,
+        username: data.username,
+      });
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+      router.push("/auth/login");
     }
   };
 
@@ -106,6 +115,7 @@ export default function CreateEventPage() {
           description: data.description,
           date: formattedDate,
           time: formattedTime,
+          location_note: data.location_note,
           location: data.location,
           creator: data.creator,
           creatorUsername: data.creatorUsername,
@@ -138,9 +148,10 @@ export default function CreateEventPage() {
       description: formData.description,
       date: dateTime,
       location: formData.location,
+      location_note: formData.location_note,
     };
 
-    console.log("Sending event payload:", eventPayload);
+    // console.log("Sending event payload:", eventPayload);
 
     const response = await fetch(`${API_BASE_URL}/events/${id}`, {
       method: "PUT",
@@ -157,7 +168,7 @@ export default function CreateEventPage() {
       throw new Error(error.message || "Failed to create event");
     }
 
-    router.push("/dashboard");
+    router.back();
   };
 
   if (!isClient || !initialData) {

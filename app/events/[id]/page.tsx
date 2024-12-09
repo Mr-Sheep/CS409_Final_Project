@@ -371,7 +371,8 @@ export default function EventDetailPage({
                 <FaLocationDot />
                 <div className="px-1">
                   <p>{event.location.address}</p>
-                  <p className="py-2 mb-4">{event.location.full_address}</p>
+                  <p>{event.location.full_address}</p>
+                  <p className="mb-4">{event.location_note}</p>
                 </div>
               </div>
               <Link
