@@ -10,7 +10,23 @@ export default function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("token"));
+    // https://curity.medium.com/best-practices-for-storing-access-tokens-in-the-browser-6b3d515d9814
+    // https://stackoverflow.com/questions/67872363/how-to-check-the-token-in-localstorage-is-valid-or-not
+    const checkLogin = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    checkLogin();
+
+    const handleStorageUpdate = () => {
+      checkLogin();
+    };
+
+    window.addEventListener("storage", handleStorageUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageUpdate);
+    };
   }, [pathname]);
 
   const handleLogout = () => {
