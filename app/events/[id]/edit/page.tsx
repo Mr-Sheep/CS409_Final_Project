@@ -5,7 +5,6 @@ import { UserProfile } from "@/app/lib/types";
 import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 const EventForm = dynamic(() => import("../../../components/EventForm"), {
