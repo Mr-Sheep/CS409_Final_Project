@@ -64,69 +64,73 @@ export default function CreateEventPage() {
       }
     };
 
+    const fetchEventDetails = async (eventId: string, token: string | null) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const date = new Date(data.date);
+          const formattedDate = date.toISOString().split("T")[0];
+          const formattedTime = date.toISOString().split("T")[1].slice(0, 5);
+
+          setInitialData({
+            name: data.name,
+            description: data.description,
+            date: formattedDate,
+            time: formattedTime,
+            location_note: data.location_note,
+            location: data.location,
+            creator: data.creator,
+            creatorUsername: data.creatorUsername,
+          });
+        } else {
+          console.error("Failed to fetch event details");
+        }
+      } catch (err: any) {
+        console.error(`Failed to fetch event details: ${err.message}`);
+      }
+    };
+
     fetchUserProfile();
     const eventId = Array.isArray(id) ? id[0] : id;
+
     if (eventId) {
+      console.log(eventId);
       fetchEventDetails(eventId, token);
-    }
+    } else {
+      // https://stackoverflow.com/questions/10211145/getting-current-date-and-time-in-javascript
+      const now = new Date();
+      const localNow = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+      );
+      const currentDate = localNow.toISOString().split("T")[0];
+      const currentTime = localNow.toISOString().split("T")[1].slice(0, 5);
 
-    // https://stackoverflow.com/questions/10211145/getting-current-date-and-time-in-javascript
-    const now = new Date();
-    const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-    const currentDate = localNow.toISOString().split("T")[0];
-    const currentTime = localNow.toISOString().split("T")[1].slice(0, 5);
-
-    setInitialData({
-      name: "",
-      description: "",
-      date: currentDate,
-      time: currentTime,
-      location_note: "",
-      location: {
-        address: "",
-        full_address: "",
-        latitude: 0,
-        longitude: 0,
-        mapbox_id: "",
-      },
-      creator: "",
-      creatorUsername: "",
-    });
-  }, [id, isClient, router]);
-
-  const fetchEventDetails = async (eventId: string, token: string | null) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      setInitialData({
+        name: "",
+        description: "",
+        date: currentDate,
+        time: currentTime,
+        location_note: "",
+        location: {
+          address: "",
+          full_address: "",
+          latitude: 0,
+          longitude: 0,
+          mapbox_id: "",
         },
+        creator: "",
+        creatorUsername: "",
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        const date = new Date(data.date);
-        const formattedDate = date.toISOString().split("T")[0];
-        const formattedTime = date.toISOString().split("T")[1].slice(0, 5);
-
-        setInitialData({
-          name: data.name,
-          description: data.description,
-          date: formattedDate,
-          time: formattedTime,
-          location_note: data.location_note,
-          location: data.location,
-          creator: data.creator,
-          creatorUsername: data.creatorUsername,
-        });
-      } else {
-        console.error("Failed to fetch event details");
-      }
-    } catch (err: any) {
-      console.error(`Failed to fetch event details: ${err.message}`);
     }
-  };
+  }, [id, isClient, router]);
 
   const handleUpdateEvent = async (formData: any) => {
     if (!isClient) return;

@@ -37,6 +37,7 @@ export interface FormData extends EventBase {
 export interface EventCardProps {
   event: Event;
   onDelete?: (eventId: string) => void;
+  onLeave?: (eventId: string) => void;
 }
 
 // use in EventForm.tsx

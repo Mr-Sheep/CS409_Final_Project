@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ToggleBar from "../components/ToggleBar";
+import { ToastContainer, toast, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import EventForm from "../components/EventForm";
 
 const EventCard = dynamic(() => import("../components/EventCard"), {
@@ -122,6 +124,34 @@ export default function DashboardPage() {
     fetchUserJoinedEvents();
   }, [userProfile, router, showAll, showAllJoined]);
 
+  const handleLeave = async (eventId: string) => {
+    if (!confirm("Are you sure you want to leave this event?")) {
+      return;
+    }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/leave/${eventId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to leaf event");
+      }
+
+      toast.success("Successfully left the event!");
+      setJoinedEvents(joinedEvents.filter((event) => event._id !== eventId));
+    } catch (error) {
+      console.error(`failed to leave event: ${error}`);
+    }
+  };
+
   const handleDelete = async (eventId: string) => {
     if (!confirm("Are you sure you want to delete this event?")) {
       return;
@@ -140,6 +170,7 @@ export default function DashboardPage() {
         throw new Error("Failed to delete event");
       }
 
+      toast.success("Successfully deleted the event!");
       setEvents(events.filter((event) => event._id !== eventId));
     } catch (err) {
       console.error("Error deleting event:", err);
@@ -322,12 +353,13 @@ export default function DashboardPage() {
               <EventCard
                 key={event._id}
                 event={event}
-                onDelete={handleDelete}
+                onLeave={() => handleLeave(event._id)}
               />
             ))}
           </div>
         )}
       </div>
+      <ToastContainer autoClose={1000} closeOnClick transition={Slide} />
     </div>
   );
 }

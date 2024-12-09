@@ -3,6 +3,13 @@
 import { FormData, EventFormProps } from "../lib/types";
 import { useState } from "react";
 import AddressAutofillProps from "./MapSearchBox";
+import Markdown from "react-markdown";
+
+// https://github.com/remarkjs/react-markdown/issues/273
+// https://stackoverflow.com/questions/60332183/new-line-with-react-markdown
+// did not really work
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 
 export default function EventForm({
   initialData,
@@ -93,6 +100,12 @@ export default function EventForm({
           className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           required
         />
+
+        <div className="mt-4 border rounded-lg p-4 bg-gray-50 text-gray-900">
+          <Markdown remarkPlugins={[remarkBreaks, remarkGfm]}>
+            {formData.description}
+          </Markdown>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

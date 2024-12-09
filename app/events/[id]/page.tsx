@@ -12,6 +12,9 @@ import MapDisplay from "@/app/components/MapDisplay";
 import WeatherWidget from "@/app/components/WeatherWidget";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Markdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 
 // fixed using https://github.com/vercel/next.js/issues/71690#issuecomment-2439644682
 interface Params {
@@ -139,7 +142,7 @@ export default function EventDetailPage({
         }
 
         const data = await response.json();
-        console.log(response);
+
         const p = Array.isArray(data) ? data : [data];
 
         setparticipants({
@@ -176,7 +179,7 @@ export default function EventDetailPage({
       }
 
       const data = await response.json();
-      console.log(response);
+
       const p = Array.isArray(data) ? data : [data];
 
       setparticipants({
@@ -331,9 +334,11 @@ export default function EventDetailPage({
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
               Description
             </h2>
-            <p className="text-gray-600 whitespace-pre-line">
-              {event.description}
-            </p>
+            <div className="text-gray-600 whitespace-pre-wrap">
+              <Markdown remarkPlugins={[remarkBreaks, remarkGfm]}>
+                {event.description}
+              </Markdown>
+            </div>
             <QRCodeGenerator eventId={event._id} eventName={event.name} />
           </div>
 
