@@ -25,7 +25,6 @@ export default function DashboardPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [joinedEvents, setJoinedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingJoined, setLoadingJoined] = useState(true);
   const [error, setError] = useState("");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showAll, setShowAll] = useState(true);
