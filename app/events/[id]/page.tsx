@@ -2,7 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import { API_BASE_URL } from "@/app/api/config";
-import { Event, UserProfile } from "@/app/lib/types";
+import { Event, UserProfile, EventParticipant } from "@/app/lib/types";
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,6 +10,8 @@ import QRCodeGenerator from "@/app/components/QRCodeGenerator";
 import { FaRegCalendarCheck, FaLocationDot } from "react-icons/fa6";
 import MapDisplay from "@/app/components/MapDisplay";
 import WeatherWidget from "@/app/components/WeatherWidget";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // fixed using https://github.com/vercel/next.js/issues/71690#issuecomment-2439644682
 interface Params {
@@ -26,8 +28,12 @@ export default function EventDetailPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isOwner, setIsOwner] = useState(false);
+  const [isJoined, setIsJoined] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { id } = use(params);
+  const [participants, setparticipants] = useState<EventParticipant | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -86,8 +92,152 @@ export default function EventDetailPage({
       }
     };
 
+    const joinStatus = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/event/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to join event");
+        }
+
+        const data = await response.json();
+
+        setIsJoined(data?.joined || false);
+      } catch (error) {
+        console.error(`failed to check event: ${error}`);
+      }
+    };
+
+    const fetchParticipants = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/events/${id}/participants`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch participants");
+        }
+
+        const data = await response.json();
+        console.log(response);
+        const p = Array.isArray(data) ? data : [data];
+
+        setparticipants({
+          participants: p,
+        });
+      } catch (error) {
+        console.error("Error fetching participants:", error);
+      }
+    };
+
     fetchEventDetails();
+    joinStatus();
+    if (userProfile) fetchParticipants();
   }, [id, userProfile]);
+
+  const fetchParticipants = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/events/${id}/participants`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch participants");
+      }
+
+      const data = await response.json();
+      console.log(response);
+      const p = Array.isArray(data) ? data : [data];
+
+      setparticipants({
+        participants: p,
+      });
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
+
+  const handleJoin = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/join/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to join event");
+      }
+
+      toast.success("Successfully joined the event!");
+      setIsJoined(true);
+      fetchParticipants();
+    } catch (error) {
+      console.error(`failed to join event: ${error}`);
+    }
+  };
+
+  const handleLeave = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/leave/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to leaf event");
+      }
+
+      toast.success("Successfully left the event!");
+      setIsJoined(false);
+      fetchParticipants();
+    } catch (error) {
+      console.error(`failed to leave event: ${error}`);
+    }
+  };
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this event?")) {
@@ -96,7 +246,7 @@ export default function EventDetailPage({
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/api/events/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/events/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -199,6 +349,18 @@ export default function EventDetailPage({
                   {new Date(event.date).toLocaleTimeString()}
                 </span>
               </div>
+              {userProfile && (
+                <button
+                  onClick={isJoined ? handleLeave : handleJoin}
+                  className={`${
+                    isJoined
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  } text-white px-4 mt-4 py-2 rounded-lg transition-colors`}
+                >
+                  {isJoined ? "Leave" : "Join"}
+                </button>
+              )}
             </div>
 
             <div>
@@ -243,6 +405,34 @@ export default function EventDetailPage({
                   event.location.longitude,
                 ]}
               />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                Participants
+              </h2>
+              {userProfile && participants && (
+                <div>
+                  {participants.participants.length === 0 ? (
+                    <p className="text-gray-600">No participants yet.</p>
+                  ) : (
+                    <ul className="list-disc pl-5">
+                      {participants.participants.map(
+                        (participant: { username: string }, index: number) => (
+                          <li key={index} className="text-gray-600">
+                            {participant.username}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  )}
+                </div>
+              )}
+
+              {!userProfile && (
+                <div className="bg-red-100 text-red-700 p-4 rounded">
+                  <p>Please log in to see the list of participants</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

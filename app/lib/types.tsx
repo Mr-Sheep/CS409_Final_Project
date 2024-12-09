@@ -22,6 +22,12 @@ export interface Event extends EventBase {
   creatorUsername: string;
 }
 
+export interface EventParticipant {
+  participants: Array<{
+    username: string;
+  }>;
+}
+
 // EventForm.tsx
 export interface FormData extends EventBase {
   time: string;

@@ -7,18 +7,31 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import ToggleBar from "../components/ToggleBar";
 // import EventForm from "../components/EventForm";
 
 const EventCard = dynamic(() => import("../components/EventCard"), {
   ssr: false,
 });
 
+const isFuture = (event: Event): boolean => {
+  const now = new Date();
+  const eventDate = new Date(event.date);
+  return eventDate > now;
+};
+
 export default function DashboardPage() {
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
+  const [joinedEvents, setJoinedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingJoined, setLoadingJoined] = useState(true);
   const [error, setError] = useState("");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [showAll, setShowAll] = useState(true);
+  const [showFilter, setShowFilter] = useState(false);
+  const [showFilterJoined, setShowFilterJoined] = useState(false);
+  const [showAllJoined, setShowAllJoined] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,21 +72,21 @@ export default function DashboardPage() {
     const fetchUserEvents = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API_BASE_URL}/events/user/${userProfile.username}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/user/events`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch events");
         }
 
         const data = await response.json();
-        setEvents(data);
+
+        const dispalyEvents = showAll ? data : data.filter(isFuture);
+
+        setEvents(dispalyEvents);
       } catch (err) {
         setError("Failed to load your events.");
         console.error("Error fetching user events:", err);
@@ -82,8 +95,35 @@ export default function DashboardPage() {
       }
     };
 
+    const fetchUserJoinedEvents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${API_BASE_URL}/user/events/joined`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+
+        const data = await response.json();
+
+        const dispalyEvents = showAllJoined ? data : data.filter(isFuture);
+
+        setJoinedEvents(dispalyEvents);
+      } catch (err) {
+        setError("Failed to load your joined events.");
+        console.error("Error fetching user joined events:", err);
+      } finally {
+        setLoadingJoined(false);
+      }
+    };
+
     fetchUserEvents();
-  }, [userProfile, router]);
+    fetchUserJoinedEvents();
+  }, [userProfile, router, showAll, showAllJoined]);
 
   const handleDelete = async (eventId: string) => {
     if (!confirm("Are you sure you want to delete this event?")) {
@@ -152,21 +192,136 @@ export default function DashboardPage() {
           Create Event
         </Link>
 
+        {!showFilter && (
+          <button
+            onClick={() => setShowFilter(true)}
+            className="flex items-center mb-8 mt-4"
+          >
+            <span>Show Filter</span>
+          </button>
+        )}
+
+        {showFilter && (
+          <div className="flex items-start flex-col mb-8 mt-4">
+            <div className="controls items-start flex">
+              <span>Hide Past Events: </span>
+              <ToggleBar
+                value={!showAll}
+                onChange={() => setShowAll(!showAll)}
+              />
+            </div>
+            <button
+              className="text-gray-500"
+              onClick={() => setShowFilter(!showFilter)}
+            >
+              Hide Filter
+            </button>
+          </div>
+        )}
+
         {events.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-            <p className="text-gray-600 mb-4">
-              You have not created any events yet.
-            </p>
-            <button
-              onClick={() => router.push("/events/create")}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Create your first event
-            </button>
+            {showAll && (
+              <div>
+                <p className="text-gray-600 mb-4">
+                  You have not created any events yet.
+                </p>
+                <button
+                  onClick={() => router.push("/events/create")}
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Create your first event
+                </button>
+              </div>
+            )}
+            {!showAll && (
+              <div>
+                <p className="text-gray-600 mb-4">
+                  You have not created any future events yet.
+                </p>
+                <button
+                  onClick={() => router.push("/events/create")}
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Create your first future event
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-6 mt-4">
             {events.map((event) => (
+              <EventCard
+                key={event._id}
+                event={event}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="mb-8">
+        <h2 className="text-gray-600 text-xl font-semibold mb-4">
+          Joined Events
+        </h2>
+        {!showFilterJoined && (
+          <button
+            onClick={() => setShowFilterJoined(true)}
+            className="flex items-center mb-8 mt-4"
+          >
+            <span>Show Filter</span>
+          </button>
+        )}
+
+        {showFilterJoined && (
+          <div className="flex items-start flex-col mb-8 mt-4">
+            <div className="controls items-start flex">
+              <span>Hide Past Events: </span>
+              <ToggleBar
+                value={!showAllJoined}
+                onChange={() => setShowAllJoined(!showAllJoined)}
+              />
+            </div>
+            <button
+              className="text-gray-500"
+              onClick={() => setShowFilterJoined(!showFilterJoined)}
+            >
+              Hide Filter
+            </button>
+          </div>
+        )}
+        {joinedEvents.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+            {showAllJoined && (
+              <div>
+                <p className="text-gray-600 mb-4">
+                  You have not joined any events yet.
+                </p>
+                <button
+                  onClick={() => router.push("/events")}
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Checkout the events
+                </button>
+              </div>
+            )}
+            {!showAllJoined && (
+              <div>
+                <p className="text-gray-600 mb-4">
+                  You have not joined any future events yet.
+                </p>
+                <button
+                  onClick={() => router.push("/events")}
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Checkout the events
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-6 mt-4">
+            {joinedEvents.map((event) => (
               <EventCard
                 key={event._id}
                 event={event}

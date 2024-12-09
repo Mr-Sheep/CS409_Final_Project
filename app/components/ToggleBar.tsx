@@ -6,7 +6,6 @@ interface ToggleBarProps {
 }
 
 // some random youtube tutorial: https://www.youtube.com/watch?v=NevOIteYwu4
-
 export default function ToggleBar({ value, onChange }: ToggleBarProps) {
   return (
     <div

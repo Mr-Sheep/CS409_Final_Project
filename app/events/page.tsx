@@ -10,7 +10,7 @@ import ToggleBar from "../components/ToggleBar";
 const isFuture = (event: Event): boolean => {
   const now = new Date();
   const eventDate = new Date(event.date);
-  return eventDate > now;
+  return eventDate >= now;
 };
 
 export default function EventsPage() {
@@ -82,9 +82,17 @@ export default function EventsPage() {
       )}
 
       {showFilter && (
-        <div className="flex items-center mb-8">
-          <span>Show Past Events: </span>
-          <ToggleBar value={showAll} onChange={setShowAll} />
+        <div className="flex items-start flex-col mb-8 mt-4">
+          <div className="controls items-start flex">
+            <span>Show Past Events: </span>
+            <ToggleBar value={showAll} onChange={setShowAll} />
+          </div>
+          <button
+            className="text-gray-500"
+            onClick={() => setShowFilter(!showFilter)}
+          >
+            Hide Filter
+          </button>
         </div>
       )}
 

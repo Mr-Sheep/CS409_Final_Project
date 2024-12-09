@@ -28,7 +28,7 @@ const WeatherWidget = ({ coordinates, dateTime }: WeatherWidgetProp) => {
 
       try {
         const date = new Date(dateTime).toISOString().split("T")[0];
-        console.log(date);
+        // console.log(date);
 
         const params = {
           latitude: coordinates[0],
@@ -68,7 +68,7 @@ const WeatherWidget = ({ coordinates, dateTime }: WeatherWidgetProp) => {
           },
         };
 
-        console.log(weatherData.daily.time.length);
+        // console.log(weatherData.daily.time.length);
 
         const weather: WeatherData = {
           date: weatherData.daily.time[0].toISOString().split("T")[0],
