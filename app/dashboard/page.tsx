@@ -194,14 +194,14 @@ export default function DashboardPage() {
             onClick={() => setShowFilter(true)}
             className="flex items-center mb-8 mt-4"
           >
-            <span>Show Filter</span>
+            <span className="text-gray-500">Show Filter</span>
           </button>
         )}
 
         {showFilter && (
           <div className="flex items-start flex-col mb-8 mt-4">
             <div className="controls items-start flex">
-              <span>Hide Past Events: </span>
+              <span className="text-gray-900">Hide Past Events: </span>
               <ToggleBar
                 value={!showAll}
                 onChange={() => setShowAll(!showAll)}
@@ -266,14 +266,14 @@ export default function DashboardPage() {
             onClick={() => setShowFilterJoined(true)}
             className="flex items-center mb-8 mt-4"
           >
-            <span>Show Filter</span>
+            <span className="text-gray-500">Show Filter</span>
           </button>
         )}
 
         {showFilterJoined && (
           <div className="flex items-start flex-col mb-8 mt-4">
             <div className="controls items-start flex">
-              <span>Hide Past Events: </span>
+              <span className="text-gray-900">Hide Past Events: </span>
               <ToggleBar
                 value={!showAllJoined}
                 onChange={() => setShowAllJoined(!showAllJoined)}

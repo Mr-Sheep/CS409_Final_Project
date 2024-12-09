@@ -77,14 +77,14 @@ export default function EventsPage() {
           onClick={() => setShowFilter(true)}
           className="flex items-center mb-8"
         >
-          <span>Show Filter</span>
+          <span className="text-gray-500">Show Filter</span>
         </button>
       )}
 
       {showFilter && (
         <div className="flex items-start flex-col mb-8 mt-4">
           <div className="controls items-start flex">
-            <span>Show Past Events: </span>
+            <span className="text-gray-900">Show Past Events: </span>
             <ToggleBar value={showAll} onChange={setShowAll} />
           </div>
           <button

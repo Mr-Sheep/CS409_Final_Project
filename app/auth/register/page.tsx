@@ -78,7 +78,7 @@ export default function Register() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, username: e.target.value }))
             }
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
             required
             minLength={3}
           />
@@ -98,7 +98,7 @@ export default function Register() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, password: e.target.value }))
             }
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500  text-gray-700"
             required
             minLength={6}
           />
@@ -121,7 +121,7 @@ export default function Register() {
                 confirmPassword: e.target.value,
               }))
             }
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500  text-gray-700"
             required
             minLength={6}
           />
