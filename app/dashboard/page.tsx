@@ -115,8 +115,6 @@ export default function DashboardPage() {
       } catch (err) {
         setError("Failed to load your joined events.");
         console.error("Error fetching user joined events:", err);
-      } finally {
-        setLoadingJoined(false);
       }
     };
 
