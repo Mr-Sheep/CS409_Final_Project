@@ -137,9 +137,11 @@ router.delete("/:id", verifyToken, verifyEventOwnership, async (req, res) => {
 // Show participants
 router.get("/:id/participants", verifyToken, async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id)
-      .populate("participants", "username -_id")
-      .select("participants");
+    const event = await Event.findById(req.params.id).populate(
+      "participants",
+      "username"
+    );
+
     if (!event) {
       return res.status(404).json({
         image: "https://http.cat/images/404.jpg",
@@ -151,6 +153,7 @@ router.get("/:id/participants", verifyToken, async (req, res) => {
     // console.log(event.participants);
 
     const participants = event.participants || [];
+    // console.log(participants);
 
     res.status(200).json(participants);
   } catch (error) {

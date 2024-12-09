@@ -22,11 +22,13 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  participants: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    select: false, // https://stackoverflow.com/questions/12096262/how-to-protect-the-password-field-in-mongoose-mongodb-so-it-wont-return-in-a-qu
-  },
+  participants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      select: false, // https://stackoverflow.com/questions/12096262/how-to-protect-the-password-field-in-mongoose-mongodb-so-it-wont-return-in-a-qu
+    },
+  ],
 });
 
 const Event = mongoose.model("Event", eventSchema);

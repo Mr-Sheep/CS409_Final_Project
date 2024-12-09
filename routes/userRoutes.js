@@ -152,14 +152,20 @@ router.post("/user/join/:event", verifyToken, async (req, res) => {
       });
     }
 
-    await User.updateOne(
-      { _id: req.userId },
-      { $addToSet: { joined_event: event } }
-    );
+    const updatedEvent = await Event.findByIdAndUpdate(
+      event,
+      { $addToSet: { participants: req.userId } },
+      { new: true }
+    ).populate("participants", "username");
 
-    await Event.updateOne(
-      { _id: event },
-      { $addToSet: { participants: req.userId } }
+    // console.log("updated: ", updatedEvent.participants);
+
+    await User.findByIdAndUpdate(
+      req.userId,
+      {
+        $addToSet: { joined_event: event },
+      },
+      { new: true }
     );
 
     res.status(200).json({
@@ -180,7 +186,7 @@ router.post("/user/leave/:event", verifyToken, async (req, res) => {
 
   try {
     const user = await User.findById(req.userId);
-    console.log(`user ${user.username} is attempting to join event: ${event}`);
+    console.log(`user ${user.username} is attempting to leave event: ${event}`);
 
     if (!user) {
       return res.status(404).json({
@@ -204,19 +210,25 @@ router.post("/user/leave/:event", verifyToken, async (req, res) => {
       });
     }
 
-    await User.updateOne(
-      { _id: req.userId },
-      { $pull: { joined_event: event } }
+    await Event.findByIdAndUpdate(
+      event,
+      {
+        $pull: { participants: req.userId },
+      },
+      { new: true }
     );
 
-    await Event.updateOne(
-      { _id: event },
-      { $pull: { participants: req.userId } }
+    await User.findByIdAndUpdate(
+      req.userId,
+      {
+        $pull: { joined_event: event },
+      },
+      { new: true }
     );
 
     res.status(200).json({
       image: "https://http.cat/images/200.jpg",
-      message: "Successfully joined event",
+      message: "Successfully left event",
     });
   } catch (e) {
     res.status(500).json({
