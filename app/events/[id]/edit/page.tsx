@@ -35,6 +35,35 @@ export default function CreateEventPage() {
     if (!token) {
       router.push("/auth/login");
     }
+
+    const fetchUserProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/auth/login");
+        return;
+      }
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user profile");
+        }
+
+        const data = await response.json();
+        setUserProfile({
+          id: data._id,
+          username: data.username,
+        });
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        router.push("/auth/login");
+      }
+    };
+
     fetchUserProfile();
     const eventId = Array.isArray(id) ? id[0] : id;
     if (eventId) {
@@ -64,34 +93,6 @@ export default function CreateEventPage() {
       creatorUsername: "",
     });
   }, [id, isClient, router]);
-
-  const fetchUserProfile = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/auth/login");
-      return;
-    }
-    try {
-      const response = await fetch(`${API_BASE_URL}/user/profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch user profile");
-      }
-
-      const data = await response.json();
-      setUserProfile({
-        id: data._id,
-        username: data.username,
-      });
-    } catch (err) {
-      console.error("Error fetching user profile:", err);
-      router.push("/auth/login");
-    }
-  };
 
   const fetchEventDetails = async (eventId: string, token: string | null) => {
     try {
