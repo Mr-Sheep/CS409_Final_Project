@@ -97,7 +97,7 @@ export default function EventForm({
           value={formData.description}
           onChange={handleChange}
           rows={4}
-          className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="text-gray-700 h-96 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           required
         />
 
