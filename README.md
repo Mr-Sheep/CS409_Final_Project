@@ -10,8 +10,9 @@ EventLawnchair is a simple but all in one event scheduler and manage app.
 
 ```
 git clone https://github.com/Mr-Sheep/CS409_Final_Project
-npm install
-npm start
+bun install
+bun run build
+bun run start
 ```
 
 ## backend
