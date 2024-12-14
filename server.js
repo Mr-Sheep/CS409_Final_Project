@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 
-const secrets = require("./config/secrets");
+const secrets = require("/etc/secrets/secrets");
 
 const eventRoutes = require("./routes/eventRoutes");
 const userRoutes = require("./routes/userRoutes");
